@@ -1,0 +1,10 @@
+board::k.reshape[10 10;0]
+snake::(2 0;1 0;0 0) / head + body, array indices
+dir::"s" / 0 1 2 3 -> N E S W
+dirs::(!"n e s w")!({(x-1;y)};{(x;y+1)};{(x+1;y)};{(x;y-1)})
+fruit::5 5 / one fruit limit
+plot:{{board::.[board;x;{1}]}'1_snake; board::.[board;*snake;{2}]; board::.[board;fruit;{3}]; board}
+next:{dirfn:dirs[dir];{board::.[board;x;{0}]}'snake;snake::dirfn.'snake}
+next board; plot board
+dir::"w"
+plot board
