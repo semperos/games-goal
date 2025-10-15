@@ -1,12 +1,13 @@
-w:10;h:10;board::k.reshape[(h;w);0];allpos:,/(!h),'`(!w); allpos;allposs:$'allpos
-snake::(2 0;1 0;0 0) / head + body, array indices
-dir::"s" / 0 1 2 3 -> N E S W
-dirs::(!"n e s w")!({(x-1;y)};{(x;y+1)};{(x+1;y)};{(x;y-1)})
-frt::5 5 / one fruit limit
-newfrt:{[snake]*1?allpos[&*/~($'snake)~'`allposs]} 
-plot:{{board::.[board;x;{1}]}'1_snake; board::.[board;*snake;{2}]; board::.[board;frt;{3}]; board}
-next:{dirfn:dirs[dir];{board::.[board;x;{0}]}'snake;hd:dirfn.*snake;\eats:hd~frt;tl:?[eats;snake;-1_snake];snake::(,hd),tl;frt::?[eats;\newfrt[snake];frt]}
+end::0; l:10; board::k.reshape[(l;l);0]; allpos:,/(!l),'`(!l); allposs:$'allpos
+snk::(2 0;1 0;0 0) / head + body, array indices (thus y, x)
+dir::"s"; dirs:!"n e s w"; odirs:dirs!2 rotate dirs
+dirfns::dirs!({(x-1;y)};{(x;y+1)};{(x+1;y)};{(x;y-1)})
+frt::5 5; newfrt:{[snk]*1?allpos[&*/~($'snk)~'`allposs]} 
+plot:{?[end;k.reshape[(l;l);9];[{board::.[board;x;{1}]}'1_snk; board::.[board;*snk;{2}]; board::.[board;frt;{3}]; board]]}
+coll:{[hd;snk]shd:$hd;snks:$'snk; end::|/shd~'snks; end::end or -1=&/sign hd; end::end or l=|/hd; end}
+next:{[x;newdir]dir::?[newdir~odirs[dir];dir;newdir];dirfn:dirfns[dir];{board::.[board;x;{0}]}'snk;hd:dirfn.*snk;?[coll[hd;snk];:1;0];eats:hd~frt;tl:?[eats;snk;-1_snk];snk::(,hd),tl;frt::?[eats;newfrt[snk];frt]}
 plot board
-next board; plot board
-dir::"e"
-plot board
+next[board;"n"]; plot board
+next[board;"e"]; plot board
+next[board;"s"]; plot board
+next[board;"w"]; plot board
