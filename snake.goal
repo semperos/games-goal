@@ -1,13 +1,10 @@
-reset:{end::0; l::10; dir::"s"; board::k.reshape[(l;l);0]; allpos::,/(!l),'`(!l); allposs::$'allpos; snk::(2 0;1 0;0 0); frt::5 5}; reset""
+walls1::((3 0);(3 8);(1 4);(8 4);(6 7);(4 1))
+reset:{end::0; l::15; dir::"s"; board::k.reshape[(l;l);0]; allpos::,/(!l),'`(!l); allposs::$'allpos; snk::(2 0;1 0;0 0); frt::5 5}; reset""
 dirs:!"n e s w"; odirs:dirs!2 rotate dirs
 dirfns::dirs!({(x-1;y)};{(x;y+1)};{(x+1;y)};{(x;y-1)})
-newfrt:{[snk]*1?allpos[&*/~($'snk)~'`allposs]} 
-plot:{?[end;k.reshape[(l;l);9];[{board::.[board;x;{1}]}'1_snk; board::.[board;*snk;{2}]; board::.[board;frt;{3}]; board]]}
-coll:{[hd;snk]shd:$hd;snks:$'snk; end::|/shd~'snks; end::end or -1=&/sign hd; end::end or l=|/hd; end}
+newfrt:{[snk]*1?allpos[&*/~($'snk,walls1)~'`allposs]} 
+plot2:{?[end;k.reshape[(l;l);9];[{board::.[board;x;{1}]}'1_snk; board::.[board;*snk;{2}]; board::.[board;frt;{3}]; board]]}
+plot:{board::k.reshape[(l;l);"🌴"]; {board::.[board;x;{"💣"}]}'walls1; ?[end;k.reshape[(l;l);"💥"];[{board::.[board;x;{"🩷"}]}'1_snk; board::.[board;*snk;{"🐲"}]; board::.[board;frt;{"😿"}]; board]]}
+coll:{[hd;snk]shd:$hd;snks:$'snk; end::|/shd~'snks; end::end or |/shd~'$'walls1; end::end or -1=&/sign hd; end::end or l=|/hd; end}
 next:{[x;newdir]dir::?[newdir~odirs[dir];dir;newdir];dirfn:dirfns[dir];{board::.[board;x;{0}]}'snk;hd:dirfn.*snk;?[coll[hd;snk];:1;0];eats:hd~frt;tl:?[eats;snk;-1_snk];snk::(,hd),tl;frt::?[eats;newfrt[snk];frt]}
-render:{say shell"clear";say plot[x];say "\nSnake length: " + $#snk}
-/ render board
-/ next[board;"n"]; render board
-/ next[board;"e"]; render board
-/ next[board;"s"]; render board
-/ next[board;"w"]; render board
+render:{say shell"clear";say'plot[x];say "\n🐍 length: " + $#snk}
