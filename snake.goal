@@ -5,6 +5,6 @@ dirfns::dirs!({(x-1;y)};{(x;y+1)};{(x+1;y)};{(x;y-1)})
 newfrt:{[snk]*1?allpos[&*/~($'snk,walls1)~'`allposs]} 
 plot2:{?[end;k.reshape[(l;l);9];[{board::.[board;x;{1}]}'1_snk; board::.[board;*snk;{2}]; board::.[board;frt;{3}]; board]]}
 plot:{board::k.reshape[(l;l);"🌴"]; {board::.[board;x;{"💣"}]}'walls1; ?[end;k.reshape[(l;l);"💥"];[{board::.[board;x;{"🩷"}]}'1_snk; board::.[board;*snk;{"🐲"}]; board::.[board;frt;{"😿"}]; board]]}
-coll:{[hd;snk]shd:$hd;snks:$'snk; end::|/shd~'snks; end::end or |/shd~'$'walls1; end::end or -1=&/sign hd; end::end or l=|/hd; end}
-next:{[x;newdir]dir::?[newdir~odirs[dir];dir;newdir];dirfn:dirfns[dir];{board::.[board;x;{0}]}'snk;hd:dirfn.*snk;?[coll[hd;snk];:1;0];eats:hd~frt;tl:?[eats;snk;-1_snk];snk::(,hd),tl;frt::?[eats;newfrt[snk];frt]}
+coll:{[hd;snk]shd:$hd;snks:$'snk; end::|/(|/shd~'snks;|/shd~'$'walls1;-1=&/sign hd;l=|/hd); end}
+update:{[x;newdir]?[end;:error"Game over";0]; dir::?[newdir~odirs[dir];dir;newdir];dirfn:dirfns[dir];{board::.[board;x;{0}]}'snk;hd:dirfn.*snk;?[coll[hd;snk];:1;0];eats:hd~frt;tl:?[eats;snk;-1_snk];snk::(,hd),tl;frt::?[eats;newfrt[snk];frt]}
 render:{say shell"clear";say'plot[x];say "\n🐍 length: " + $#snk}
