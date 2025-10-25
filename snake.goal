@@ -1,9 +1,8 @@
 rs:k.reshape
-reset:{end::0; l::15; dir::"s"; brd::rs[(l;l);0]; walls::((3 0);(3 8);(1 4);(8 4);(6 7);(4 1)); allpos::,/(!l),'`(!l); allposs::$'allpos; snk::(2 0;1 0;0 0); frt::5 5}; reset""
+reset:{end::0; l::15; dir::"s"; brd::rs[(l;l);0]; walls::((3 0);(3 8);(1 4);(8 4);(6 7);(4 1)); allpos::,/(!l),'`(!l); snk::(2 0;1 0;0 0); frt::5 5}; reset""
 dirs:!"n e s w"; odirs:dirs!2 rotate dirs; dirfns::dirs!({(x-1;y)};{(x;y+1)};{(x+1;y)};{(x;y-1)})
-newfrt2:{[snk]*1?allpos[&*/~($'snk,walls)~'`allposs]} 
-newfrt:{[snk]*1?allpos[&~*/'+/(,snk,walls)='`allpos]} 
+newfrt:{[snk]*1?allpos[&~allpos¿no]} 
 plot:{brd::rs[(l;l);"🌴"]; {brd::.[brd;x;{"💣"}]}'walls; ?[end;rs[(l;l);"💥"];[{brd::.[brd;x;{"🩷"}]}'1_snk; brd::.[brd;*snk;{"🐲"}]; brd::.[brd;frt;{"😿"}]; brd]]}
-coll:{[hd;snk]shd:$hd;snks:$'snk; end::|/(|/shd~'snks;|/shd~'$'walls;-1=&/sign hd;l=|/hd); end}
+coll:{[hd;snk]ouch:walls,1_snk; end::|/(|/ouch¿,hd;-1=&/sign hd;l=|/hd); end}
 update:{[x;newdir]?[end;:error"Game over";0]; dir::?[newdir~odirs[dir];dir;newdir];dirfn:dirfns[dir];{brd::.[brd;x;{0}]}'snk;hd:dirfn.*snk;?[coll[hd;snk];:1;0];eats:hd~frt;tl:?[eats;snk;-1_snk];snk::(,hd),tl;frt::?[eats;newfrt[snk];frt]}
 render:{say shell"clear";say'plot[x];say "\n🐍 length: " + $#snk}
