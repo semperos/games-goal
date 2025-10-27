@@ -1,4 +1,4 @@
-rs:k.reshape; reset:{end::0; l::15; dir::"s"; newdir::""; brd::rs[(l;l);0]; walls::((3 0);(3 8);(1 4);(8 4);(6 7);(4 1)); allpos::,/(!l),'`(!l); snk::(2 0;1 0;0 0); frt::5 5}; reset""
+rs:{((*/x)#y){(-y)$x}/|1_x}; reset:{end::0; l::15; dir::"s"; newdir::""; brd::rs[(l;l);0]; walls::((3 0);(3 8);(1 4);(8 4);(6 7);(4 1)); allpos::,/(!l),'`(!l); snk::(2 0;1 0;0 0); frt::5 5}; reset""
 dirs:!"n e s w"; kp:(!"Up Right Down Left")!dirs; odirs:dirs!2 rotate dirs; dirfns::dirs!({(x-1;y)};{(x;y+1)};{(x+1;y)};{(x;y-1)})
 newfrt:{[snk]*1?allpos[&~allpos¿walls,snk]} 
 plot:{brd::rs[(l;l);"🌴"]; {brd::.[brd;x;{"💣"}]}'walls; ?[end;rs[(l;l);"💥"];[{brd::.[brd;x;{"🩷"}]}'1_snk; brd::.[brd;*snk;{"🐲"}]; brd::.[brd;frt;{"😿"}]; brd]]}
