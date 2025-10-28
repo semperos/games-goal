@@ -24,24 +24,31 @@ func main() {
 		fmt.Printf("Error evaluating Goal game source: %v\n", err)
 	}
 
+	os.Exit(runGame(ctx))
+}
+
+func runGame(ctx *goal.Context) int {
 	if err := keyboard.Open(); err != nil {
 		fmt.Println("Failed to open keyboard:", err)
-		return
+		return 1
 	}
 	defer keyboard.Close()
 
+	//nolint:mnd // Ticker duration
 	tick := time.NewTicker(100 * time.Millisecond)
 	defer tick.Stop()
 
+	//nolint:mnd // Buffer for key events
 	keyEvents, err := keyboard.GetKeys(10)
 	if err != nil {
 		fmt.Println("Failed to get keys:", err)
-		return
+		return 1
 	}
 
 	_, err = ctx.Eval(`draw""`)
 	if err != nil {
 		fmt.Printf("Error drawing initial game: %v\n", err)
+		return 1
 	}
 
 	for {
@@ -50,15 +57,16 @@ func main() {
 		case event := <-keyEvents:
 			if event.Err != nil {
 				fmt.Println("Keyboard error:", event.Err)
-				return
+				return 1
 			}
 			if event.Rune == 'q' {
 				fmt.Println("Bye!")
-				os.Exit(0)
+				return 0
 			}
 			if event.Rune == 'n' {
 				reset(ctx)
 			}
+			//nolint:exhaustive // Keys other than these should be ignored.
 			switch event.Key {
 			case keyboard.KeyArrowUp:
 				update(ctx, "Up")
@@ -70,7 +78,7 @@ func main() {
 				update(ctx, "Left")
 			case keyboard.KeyEsc:
 				fmt.Println("Later!")
-				os.Exit(0)
+				return 0
 			}
 		}
 	}
@@ -79,7 +87,7 @@ func main() {
 func update(ctx *goal.Context, keyPress string) {
 	_, err := ctx.Eval(fmt.Sprintf(`game.KeyPress::"%s"; update""; draw""`, keyPress))
 	if err != nil {
-		fmt.Printf("Error updating key press '%s': %v\n", err)
+		fmt.Printf("Error updating key press '%s': %v\n", keyPress, err)
 	}
 }
 
